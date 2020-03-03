@@ -2,6 +2,8 @@
 API for generating hearthstone deck codes that can be imported into the Blizzard Hearthstone
 application.
 
+[![CircleCI](https://circleci.com/gh/ZachSand/hearthstone-deck-codegen-api.svg?style=svg)](https://circleci.com/gh/ZachSand/hearthstone-deck-codegen-api)
+
 **This project is currently just a personal sandbox for testing and using the Hearthtstone
 Blizzard API, however it is somewhat usable**
 
