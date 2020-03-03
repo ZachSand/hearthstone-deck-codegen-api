@@ -79,8 +79,8 @@ More detailed example JSON request (POST to localhost:8080/deckgenerator/api/dec
   - Blizzard API for Hearthstone
 
 ## Disclaimer
-This application most likely has many bugs as it doesn't have any test because I was just
-testing the Blizzard API. 
+This application most likely has many bugs as it doesn't have many tests yet due to just throwing 
+things together to test the Blizzard API. 
 
 ### To Do
 Among other things...
