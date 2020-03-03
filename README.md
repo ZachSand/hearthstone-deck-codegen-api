@@ -28,7 +28,7 @@ mvn spring-boot:run
 ```
 
 ## API Example
-Simple example JSON request to the application:
+Simple example JSON request to the application (POST to localhost:8080/deckgenerator/api/deck)
 ```
 {
   "className": "warrior",
@@ -42,7 +42,7 @@ Simple example JSON request to the application:
   ]
 }
 ```
-More detailed example JSON request:
+More detailed example JSON request (POST to localhost:8080/deckgenerator/api/deck)
 ```$xslt
 {
   "className": "warrior",
