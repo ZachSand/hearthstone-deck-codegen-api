@@ -6,6 +6,8 @@ import com.github.zachsand.hs.deck.generator.model.deck.DeckResponseStatus;
 import com.github.zachsand.hs.deck.generator.model.deck.validator.DeckRequestValidator;
 import com.github.zachsand.hs.deck.generator.service.DeckGeneratorService;
 import com.github.zachsand.hs.deck.generator.service.HearthstoneMetadataService;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +22,8 @@ import java.io.StringWriter;
 @RestController
 @RequestMapping("api")
 public class DeckGeneratorController {
+
+    private static final Logger logger = LogManager.getLogger(DeckGeneratorController.class);
 
     private DeckGeneratorService deckGeneratorService;
 
@@ -47,6 +51,7 @@ public class DeckGeneratorController {
      */
     @PostMapping(path = "/deck", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<DeckResponseModel> generateDeck(@RequestBody DeckRequestModel deckRequestModel) {
+        logger.info("Request received {}", deckRequestModel);
         try {
             hearthstoneMetadataService.refreshMetadata();
 
@@ -87,6 +92,7 @@ public class DeckGeneratorController {
     }
 
     private DeckResponseModel mapExceptionResponse(Exception e) {
+        logger.error(e);
         DeckResponseModel deckResponseModel = new DeckResponseModel();
         DeckResponseStatus deckResponseStatus = new DeckResponseStatus();
         deckResponseStatus.setStatus(DeckResponseStatus.ResponseStatus.ERROR.name());
@@ -102,6 +108,7 @@ public class DeckGeneratorController {
 
         deckResponseStatus.setMessage(errorMessages);
         deckResponseModel.setStatus(deckResponseStatus);
+        logger.debug("Error response {}.", deckResponseModel);
         return deckResponseModel;
     }
 }

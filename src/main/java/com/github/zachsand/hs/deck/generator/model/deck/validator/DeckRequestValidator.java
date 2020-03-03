@@ -13,7 +13,6 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -51,9 +50,10 @@ public class DeckRequestValidator {
 
         Set<ConstraintViolation<DeckRequestModel>> violations = validator.validate(deckRequestModel);
         violations.forEach(deckSetModelConstraintViolation ->
-            errorMessages.add(deckSetModelConstraintViolation.getPropertyPath() + ": " + deckSetModelConstraintViolation.getMessage())
+                errorMessages.add(deckSetModelConstraintViolation.getPropertyPath() + ": " + deckSetModelConstraintViolation.getMessage())
         );
 
+        /* Game format option should be a lowercase version of the enum */
         GameFormat gameFormat = null;
         try {
             gameFormat = GameFormat.valueOf(deckRequestModel.getGameFormat().toUpperCase());
@@ -61,7 +61,7 @@ public class DeckRequestValidator {
             errorMessages.add("Valid game formats are " + GameFormat.STANDARD.name().toLowerCase() + " and " + GameFormat.WILD.name().toLowerCase() + ": format given was " + gameFormat);
         }
 
-        validateDeckSet(errorMessages, deckRequestModel.getDeckSets(), gameFormat);
+        errorMessages.addAll(validateDeckSet(deckRequestModel.getDeckSets(), gameFormat));
 
         if (!errorMessages.isEmpty()) {
             deckResponseStatus.setStatus(DeckResponseStatus.ResponseStatus.ERROR.name());
@@ -73,7 +73,8 @@ public class DeckRequestValidator {
         return deckResponseStatus;
     }
 
-    private void validateDeckSet(List<String> errorMessages, DeckSetModel[] deckSets, GameFormat gameFormat) {
+    private List<String> validateDeckSet(DeckSetModel[] deckSets, GameFormat gameFormat) {
+        List<String> errorMessages = new ArrayList<>();
         Set<String> setMetadata = hearthstoneMetadataService.getSetMetadata().stream()
                 .map(SetMetadataEntity::getSlug)
                 .collect(Collectors.toSet());
@@ -94,7 +95,7 @@ public class DeckRequestValidator {
             /* Validate constraints */
             Set<ConstraintViolation<DeckSetModel>> violations = validator.validate(deckSet);
             violations.forEach(deckSetModelConstraintViolation ->
-                errorMessages.add(deckSetModelConstraintViolation.getPropertyPath() + ": " + deckSetModelConstraintViolation.getMessage())
+                    errorMessages.add(deckSetModelConstraintViolation.getPropertyPath() + ": " + deckSetModelConstraintViolation.getMessage())
             );
 
             /* Validate set name */
@@ -110,6 +111,7 @@ public class DeckRequestValidator {
         if (deckCount > DECK_MAX_SIZE) {
             errorMessages.add("Total deck size cannot exceed " + DECK_MAX_SIZE + ": size in request was " + deckCount);
         }
+        return errorMessages;
 
     }
 }

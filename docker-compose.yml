@@ -4,16 +4,14 @@ services:
 
   db:
     image: mysql
-    ports:
-      - 3306:3306
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: deckgen
-      MYSQL_DATABASE: hearthstone_deck_generator_db
+      MYSQL_DATABASE: hearthstone_db
     networks:
       - backend
   app:
-    image: hearthstone-deck-generator
+    image: hearthstone-deck-codegen-api
     ports:
       - 8080:8080
     restart: always

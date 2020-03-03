@@ -129,13 +129,12 @@ public class HearthstoneMetadataService {
 
     private boolean metadataRefreshRequired() {
         Optional<DataPolicyEntity> lastDataRefreshDate = dataPolicyRepository.findById(Long.valueOf(dataPolicyRepository.count()).intValue());
-        boolean refreshData = false;
         if (lastDataRefreshDate.isPresent()) {
             Calendar dataRefreshDate = lastDataRefreshDate.get().getDataRefreshDate();
             dataRefreshDate.add(Calendar.DATE, DATA_RETENTION_DAYS);
-            refreshData = Calendar.getInstance().compareTo(dataRefreshDate) <= 0;
+            return Calendar.getInstance().compareTo(dataRefreshDate) <= 0;
         }
-        return lastDataRefreshDate.isEmpty() || refreshData;
+        return true;
     }
 
     private List<SetMetadataEntity> retrieveSetMetadata() {

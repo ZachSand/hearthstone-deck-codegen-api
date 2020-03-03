@@ -75,7 +75,7 @@ public class DeckCodeGeneratorUtil {
      * Generate the cards block for the deck code.
      *
      * <p>
-     * he cards block contains the varint representation of:
+     * The cards block contains the varint representation of:
      *     <ol>
      *         <li>Byte indicating the number of heroes</li>
      *         <li>Hero ID byte</li>
@@ -115,13 +115,13 @@ public class DeckCodeGeneratorUtil {
         cardsBlock.addAll(getVarIntBytes(singleQuantityCards.size()));
 
         singleQuantityCards.forEach(singleQuantityCardId ->
-            cardsBlock.addAll(getVarIntBytes(singleQuantityCardId.intValue()))
+                cardsBlock.addAll(getVarIntBytes(singleQuantityCardId.intValue()))
         );
 
         cardsBlock.addAll(getVarIntBytes(doubleQuantityCards.size()));
 
         doubleQuantityCards.forEach(doubleQuantityCardId ->
-            cardsBlock.addAll(getVarIntBytes(doubleQuantityCardId.intValue()))
+                cardsBlock.addAll(getVarIntBytes(doubleQuantityCardId.intValue()))
         );
 
         cardsBlock.addAll(getVarIntBytes(NUM_CARDS_TRIPLE_QUANTITY));

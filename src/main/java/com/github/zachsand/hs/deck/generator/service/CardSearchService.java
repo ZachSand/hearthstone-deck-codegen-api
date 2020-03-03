@@ -32,7 +32,9 @@ public class CardSearchService {
     private static final String NORMAL_GAME_MODE = "constructed";
     private static final String ONLY_COLLECTIBLE_CARDS = "1";
     private static final String NEUTRAL_CLASS = "neutral";
-    private static final String PAGE_SIZE = "100";
+    private static final String PAGE_SIZE = "250";
+
+    private final static String NOT_ENOUGH_CARDS_ERROR_FORMAT = "Class %s does not have %s cards available in set %s";
 
     private BlizzardApiConfig blizzardApiConfig;
 
@@ -61,88 +63,85 @@ public class CardSearchService {
      */
     public CardsModel retrieveCards(DeckRequestModel deckRequestModel) {
         List<NameValuePair> commonCardSearchParams = getCommonCardSearchParams(deckRequestModel.getGameFormat());
-        List<CardsModel> cards = new ArrayList<>();
+        List<CardModel> cards = new ArrayList<>();
+        CardsModel deck = new CardsModel();
 
         /* Go through each deck set specification and retrieve random cards using the set specified */
         Arrays.asList(deckRequestModel.getDeckSets()).forEach(deckSet -> {
-            URI classCardSearchUri;
-            URI neutralCardSearchUri;
-            try {
-                URIBuilder classSearchUriBuilder = new URIBuilder(blizzardApiConfig.getHearthstoneBaseUrl() + CARD_ENDPOINT)
-                        .addParameter("class", deckRequestModel.getClassName())
-                        .addParameter("pageSize", PAGE_SIZE)
-                        .addParameters(commonCardSearchParams);
 
-                URIBuilder neutralCardSearchUriBuilder = new URIBuilder(blizzardApiConfig.getHearthstoneBaseUrl() + CARD_ENDPOINT)
-                        .addParameter("class", NEUTRAL_CLASS)
-                        .addParameter("pageSize", PAGE_SIZE)
-                        .addParameters(commonCardSearchParams);
-
-                /* If no set specified, all sets will be considered according to Blizzard API */
-                if (!deckSet.getSetName().equals(DeckSetModel.CUSTOM_SET_USE_ALL)) {
-                    classSearchUriBuilder.addParameter("set", deckSet.getSetName());
-                    neutralCardSearchUriBuilder.addParameter("set", deckSet.getSetName());
-                }
-
-                classCardSearchUri = classSearchUriBuilder.build();
-                neutralCardSearchUri = neutralCardSearchUriBuilder.build();
-            } catch (URISyntaxException e) {
-                throw new IllegalStateException("Error encountered while building the URI for the card search.", e);
+            CardsModel classCards = performCardSearch(getCardSearchUri(deckRequestModel.getClassName(), commonCardSearchParams, deckSet));
+            if (deckSet.getClassSetCount() > classCards.getCards().length) {
+                throw new IllegalStateException(String.format(NOT_ENOUGH_CARDS_ERROR_FORMAT, deckRequestModel.getClassName(), deckSet.getClassSetCount(), deckSet.getSetName()));
             }
 
-            try {
-                CardsModel classCards = objectMapper.readValue(Request.Get(classCardSearchUri).execute().returnContent().asString(), CardsModel.class);
-                CardsModel neutralCards = objectMapper.readValue(Request.Get(neutralCardSearchUri).execute().returnContent().asString(), CardsModel.class);
-                cards.add(getRandomCards(classCards, cards, deckSet.getClassSetCount()));
-                cards.add(getRandomCards(neutralCards, cards, deckSet.getNeutralSetCount()));
-            } catch (IOException e) {
-                throw new IllegalStateException("Error encountered while retrieving cards from Blizzard API", e);
+            CardsModel neutralCards = performCardSearch(getCardSearchUri(NEUTRAL_CLASS, commonCardSearchParams, deckSet));
+            if (deckSet.getClassSetCount() > classCards.getCards().length) {
+                throw new IllegalStateException(String.format(NOT_ENOUGH_CARDS_ERROR_FORMAT, deckRequestModel.getClassName(), deckSet.getClassSetCount(), deckSet.getSetName()));
             }
+
+            cards.addAll(getRandomCards(classCards, cards, deckSet.getClassSetCount()));
+            cards.addAll(getRandomCards(neutralCards, cards, deckSet.getNeutralSetCount()));
         });
 
-        CardsModel deck = new CardsModel();
-        deck.setCards(cards.stream()
-                .map(CardsModel::getCards)
-                .flatMap(Arrays::stream)
-                .toArray(CardModel[]::new));
+        deck.setCards(cards.toArray(new CardModel[0]));
         return deck;
+    }
+
+    private CardsModel performCardSearch(URI cardSearchUri) {
+        try {
+            return objectMapper.readValue(Request.Get(cardSearchUri)
+                    .execute()
+                    .returnContent().asString(), CardsModel.class);
+        } catch (IOException e) {
+            throw new IllegalStateException("Error encountered while retrieving cards from Blizzard API", e);
+        }
+    }
+
+    private URI getCardSearchUri(String className, List<NameValuePair> commonCardSearchParams, DeckSetModel deckSet) {
+        try {
+            URIBuilder cardSearchURi = new URIBuilder(blizzardApiConfig.getHearthstoneBaseUrl() + CARD_ENDPOINT)
+                    .addParameter("class", className)
+                    .addParameter("pageSize", PAGE_SIZE)
+                    .addParameters(commonCardSearchParams);
+
+            if (!deckSet.getSetName().equals(DeckSetModel.CUSTOM_SET_USE_ALL)) {
+                cardSearchURi.addParameter("set", deckSet.getSetName());
+            }
+            return cardSearchURi.build();
+        } catch (URISyntaxException e) {
+            throw new IllegalStateException("Error encountered while building the URI for the card search.", e);
+        }
     }
 
     /**
      * Brute force, relatively terrible implementation for getting random cards.
      */
-    private CardsModel getRandomCards(CardsModel cardsModel, List<CardsModel> existingCards, Integer cardCount) {
+    private List<CardModel> getRandomCards(CardsModel cardsModel, List<CardModel> existingCards, Integer cardCount) {
         Map<Long, Long> existingCardIds = existingCards.stream()
-                .map(CardsModel::getCards)
-                .flatMap(Arrays::stream)
                 .map(CardModel::getId)
                 .collect(Collectors.groupingBy(id -> id, Collectors.counting()));
 
         CardModel[] cards = cardsModel.getCards();
-        CardModel[] resultingCards = new CardModel[cardCount];
+        List<CardModel> randomCards = new ArrayList<>();
 
         int tries = 0;
-        int cardsAdded = 0;
         int maxTries = 30;
         Random random = new Random();
-        while (tries != maxTries && cardsAdded != cardCount) {
+        while (tries != maxTries && randomCards.size() != cardCount) {
             int randomIndex = random.nextInt(cardsModel.getCards().length);
             CardModel card = cards[randomIndex];
             if (!existingCardIds.containsKey(card.getId()) || existingCardIds.get(card.getId()) < 2) {
-                resultingCards[cardsAdded] = card;
-                cardsAdded++;
+                randomCards.add(card);
                 existingCardIds.put(card.getId(), 2L);
             }
             tries++;
         }
 
-        if (tries == maxTries && cardsAdded != cardCount) {
+        if (tries == maxTries && randomCards.size() != cardCount) {
             throw new IllegalStateException("Unable to create the deck at this time, please try again.");
         }
 
-        CardsModel resultingCardsModel = new CardsModel();
-        resultingCardsModel.setCards(resultingCards);
-        return resultingCardsModel;
+        return randomCards;
     }
 
     private List<NameValuePair> getCommonCardSearchParams(String gameFormat) {
