@@ -1,0 +1,30 @@
+version: '3.7'
+
+services:
+
+  db:
+    image: mysql
+    ports:
+      - 3306:3306
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: deckgen
+      MYSQL_DATABASE: hearthstone_deck_generator_db
+    networks:
+      - backend
+  app:
+    image: hearthstone-deck-generator
+    ports:
+      - 8080:8080
+    restart: always
+    environment:
+      - BLIZZARD_CLIENT_ID
+      - BLIZZARD_CLIENT_SECRET
+    depends_on:
+      - db
+    networks:
+      - backend
+networks:
+  backend:
+    driver: "bridge"
+

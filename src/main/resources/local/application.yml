@@ -1,0 +1,22 @@
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: false
+  datasource:
+    url: jdbc:mysql://localhost:3306/hearthstone_deck_generator_db
+    username: root
+    password: deckgen
+
+server:
+  servlet:
+    contextPath: /deckgenerator
+
+
+blizzard:
+  api:
+    encoding: UTF-8
+    token-url: https://us.battle.net/oauth/token?grant_type=client_credentials
+    hearthstone-base-url: https://us.api.blizzard.com/hearthstone
+    locale: en_US
+
