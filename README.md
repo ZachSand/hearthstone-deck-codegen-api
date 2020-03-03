@@ -11,7 +11,7 @@ Blizzard API, however it is somewhat usable**
 - BLIZZARD_CLIENT_ID
 - BLIZZARD_CLIENT_SECRET
 
-##Quickstart
+## Quick Start
 If you have docker installed on your system, run:
 ```
 ./startup.sh
@@ -27,7 +27,7 @@ and run:
 mvn spring-boot:run
 ```
 
-##API Example
+## API Example
 Simple example JSON request to the application:
 ```
 {
@@ -72,20 +72,20 @@ More detailed example JSON request:
 }
 ```
 
-###Application Info
+### Application Info
   - Java 11
   - Spring Boot, JPA
   - MySQL database
   - Blizzard API for Hearthstone
 
-##Disclaimer
+## Disclaimer
 This application most likely has many bugs as it doesn't have any test because I was just
 testing the Blizzard API. 
 
-###To Do
+### To Do
 Among other things...
 - Create Swagger for API
-- Write tests
+- Write tests, add CI for tests
 - Add logging
 - Add more verification of request data
 - Handle exceptions better than naive approach
