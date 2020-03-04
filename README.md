@@ -23,7 +23,7 @@ They will be wired up together using the docker compose file. The application wi
 available on localhost:8080
 
 Otherwise, a MySQL database will need to be configured with the details from the application.yml
-in the src/main/resources/local folder. Once the database is setup, build the projec with Maven
+in the src/main/resources/local folder. Once the database is set up, build the project with Maven
 and run:
 ```
 mvn spring-boot:run
@@ -87,7 +87,7 @@ things together to test the Blizzard API.
 ### To Do
 Among other things...
 - Create Swagger for API
-- Write tests, add CI for tests
+- Write more tests
 - Add logging
 - Add more verification of request data
 - Handle exceptions better than naive approach
