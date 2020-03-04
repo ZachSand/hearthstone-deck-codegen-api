@@ -22,6 +22,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+/**
+ * Tests for the Deck generator controller.
+ */
 @WebMvcTest(DeckGeneratorController.class)
 public class DeckGeneratorControllerTest {
 
