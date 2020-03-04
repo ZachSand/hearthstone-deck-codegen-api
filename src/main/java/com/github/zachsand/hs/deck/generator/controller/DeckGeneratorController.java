@@ -85,7 +85,7 @@ public class DeckGeneratorController {
      * @param id The ID of the deck to delete.
      * @return {@link HttpStatus#NO_CONTENT}
      */
-    @DeleteMapping
+    @DeleteMapping(path = "/deck/{id}")
     public ResponseEntity<HttpStatus> deleteDeck(@PathVariable Integer id) {
         deckGeneratorService.deleteDeck(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
