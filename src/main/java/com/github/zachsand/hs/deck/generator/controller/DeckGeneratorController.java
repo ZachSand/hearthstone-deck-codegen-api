@@ -1,11 +1,10 @@
 package com.github.zachsand.hs.deck.generator.controller;
 
-import com.github.zachsand.hs.deck.generator.model.deck.DeckRequestModel;
-import com.github.zachsand.hs.deck.generator.model.deck.DeckResponseModel;
-import com.github.zachsand.hs.deck.generator.model.deck.DeckResponseStatus;
-import com.github.zachsand.hs.deck.generator.model.deck.validator.DeckRequestValidator;
+import com.github.zachsand.hs.deck.generator.data.model.deck.DeckRequestModel;
+import com.github.zachsand.hs.deck.generator.data.model.deck.DeckResponseModel;
+import com.github.zachsand.hs.deck.generator.data.model.deck.DeckResponseStatus;
+import com.github.zachsand.hs.deck.generator.data.model.deck.validator.DeckRequestValidator;
 import com.github.zachsand.hs.deck.generator.service.DeckGeneratorService;
-import com.github.zachsand.hs.deck.generator.service.HearthstoneMetadataService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
@@ -25,20 +24,17 @@ public class DeckGeneratorController {
 
     private static final Logger logger = LogManager.getLogger(DeckGeneratorController.class);
 
-    private DeckGeneratorService deckGeneratorService;
+    private final DeckGeneratorService deckGeneratorService;
 
-    private HearthstoneMetadataService hearthstoneMetadataService;
-
-    private DeckRequestValidator deckRequestValidator;
+    private final DeckRequestValidator deckRequestValidator;
 
     /**
      * Constructs the controller for the deck generation.
      *
      * @param deckGeneratorService The deck generation service to generate Hearthstone decks.
      */
-    public DeckGeneratorController(DeckGeneratorService deckGeneratorService, HearthstoneMetadataService hearthstoneMetadataService, DeckRequestValidator deckRequestValidator) {
+    public DeckGeneratorController(final DeckGeneratorService deckGeneratorService, final DeckRequestValidator deckRequestValidator) {
         this.deckGeneratorService = deckGeneratorService;
-        this.hearthstoneMetadataService = hearthstoneMetadataService;
         this.deckRequestValidator = deckRequestValidator;
     }
 
@@ -50,19 +46,17 @@ public class DeckGeneratorController {
      * @return The {@link DeckResponseModel} which contains the deck code and associated ID.
      */
     @PostMapping(path = "/deck", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<DeckResponseModel> generateDeck(@RequestBody DeckRequestModel deckRequestModel) {
+    public ResponseEntity<DeckResponseModel> generateDeck(@RequestBody final DeckRequestModel deckRequestModel) {
         logger.info("Request received {}", deckRequestModel);
         try {
-            hearthstoneMetadataService.refreshMetadata();
-
-            DeckResponseStatus deckResponseStatus = deckRequestValidator.validateDeckRequest(deckRequestModel);
+            final DeckResponseStatus deckResponseStatus = deckRequestValidator.validateDeckRequest(deckRequestModel);
             if (deckResponseStatus.getStatus().equals(DeckResponseStatus.ResponseStatus.ERROR.name())) {
-                DeckResponseModel errorResponse = new DeckResponseModel();
+                final DeckResponseModel errorResponse = new DeckResponseModel();
                 errorResponse.setStatus(deckResponseStatus);
                 return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
             }
             return new ResponseEntity<>(deckGeneratorService.generateDeck(deckRequestModel), HttpStatus.CREATED);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             return new ResponseEntity<>(mapExceptionResponse(e), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -75,7 +69,7 @@ public class DeckGeneratorController {
      * @return The {@link DeckResponseModel} which contains the deck code and associated ID.
      */
     @GetMapping(path = "/deck/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<DeckResponseModel> getDeck(@PathVariable Integer id) {
+    public ResponseEntity<DeckResponseModel> getDeck(@PathVariable final Integer id) {
         return new ResponseEntity<>(deckGeneratorService.getDeck(id), HttpStatus.OK);
     }
 
@@ -86,22 +80,22 @@ public class DeckGeneratorController {
      * @return {@link HttpStatus#NO_CONTENT}
      */
     @DeleteMapping(path = "/deck/{id}")
-    public ResponseEntity<HttpStatus> deleteDeck(@PathVariable Integer id) {
+    public ResponseEntity<HttpStatus> deleteDeck(@PathVariable final Integer id) {
         deckGeneratorService.deleteDeck(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    private DeckResponseModel mapExceptionResponse(Exception e) {
+    private DeckResponseModel mapExceptionResponse(final Exception e) {
         logger.error(e);
-        DeckResponseModel deckResponseModel = new DeckResponseModel();
-        DeckResponseStatus deckResponseStatus = new DeckResponseStatus();
+        final DeckResponseModel deckResponseModel = new DeckResponseModel();
+        final DeckResponseStatus deckResponseStatus = new DeckResponseStatus();
         deckResponseStatus.setStatus(DeckResponseStatus.ResponseStatus.ERROR.name());
 
-        StringWriter sw = new StringWriter();
-        PrintWriter pw = new PrintWriter(sw);
+        final StringWriter sw = new StringWriter();
+        final PrintWriter pw = new PrintWriter(sw);
         e.printStackTrace(pw);
 
-        String[] errorMessages = new String[3];
+        final String[] errorMessages = new String[3];
         errorMessages[0] = "Exception encountered while processing the request.";
         errorMessages[1] = e.getMessage();
         errorMessages[2] = pw.toString();

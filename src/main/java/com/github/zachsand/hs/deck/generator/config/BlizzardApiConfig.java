@@ -21,8 +21,10 @@ public class BlizzardApiConfig {
 
     private final String locale;
 
+    private final int pageSize;
+
     /**
-     * Constructs the Blizzard API configuration.
+     * Constructs the Blizzard API configuration.\.
      *
      * @param encoding           Encoding character set to use.
      * @param tokenUrl           Blizzard API token URL.
@@ -31,11 +33,12 @@ public class BlizzardApiConfig {
      * @see <a href="https://develop.battle.net/documentation/hearthstone/guides/localization target="_top"">
      * https://develop.battle.net/documentation/hearthstone/guides/localization</a>.
      */
-    public BlizzardApiConfig(String encoding, String tokenUrl, String hearthstoneBaseUrl, String locale) {
+    public BlizzardApiConfig(final String encoding, final String tokenUrl, final String hearthstoneBaseUrl, final String locale, final int pageSize) {
         this.encoding = encoding;
         this.tokenUrl = tokenUrl;
         this.hearthstoneBaseUrl = hearthstoneBaseUrl;
         this.locale = locale;
+        this.pageSize = pageSize;
     }
 
     /**
@@ -66,5 +69,12 @@ public class BlizzardApiConfig {
      */
     public String getLocale() {
         return this.locale;
+    }
+
+    /**
+     * @return The page size to use, matches with the batch size for the database.
+     */
+    public int getPageSize() {
+        return this.pageSize;
     }
 }

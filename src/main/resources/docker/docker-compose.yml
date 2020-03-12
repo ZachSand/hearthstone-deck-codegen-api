@@ -1,0 +1,29 @@
+version: '3.7'
+
+services:
+
+  db:
+    image: postgres
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: deckgen
+      POSTGRES_DB: hearthstone_db
+  app:
+    image: hearthstone-deck-codegen-api
+    ports:
+      - 8080:8080
+    restart: always
+    environment:
+      - BLIZZARD_CLIENT_ID
+      - BLIZZARD_CLIENT_SECRET
+    depends_on:
+      - db
+    networks:
+      - backend
+networks:
+  backend:
+    driver: "bridge"
+

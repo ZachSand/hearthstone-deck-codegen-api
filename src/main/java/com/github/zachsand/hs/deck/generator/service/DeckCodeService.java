@@ -3,7 +3,7 @@ package com.github.zachsand.hs.deck.generator.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.github.zachsand.hs.deck.generator.config.BlizzardApiConfig;
-import com.github.zachsand.hs.deck.generator.model.card.CardsModel;
+import com.github.zachsand.hs.deck.generator.data.model.card.CardsModel;
 import com.github.zachsand.hs.deck.generator.oauth.BlizzardOauthHandler;
 import org.apache.http.client.fluent.Request;
 import org.apache.http.client.utils.URIBuilder;
@@ -24,20 +24,20 @@ public class DeckCodeService {
 
     private static final String DECK_CODE_ENDPOINT = "/deck";
 
-    private BlizzardApiConfig blizzardApiConfig;
+    private final BlizzardApiConfig blizzardApiConfig;
 
-    private BlizzardOauthHandler blizzardOauthHandler;
+    private final BlizzardOauthHandler blizzardOauthHandler;
 
-    private ObjectMapper objectMapper;
+    private final ObjectMapper objectMapper;
 
     /**
-     * Construcs the deck code service for retrieving the cards associated with a deck code.
+     * Constructs the deck code service for retrieving the cards associated with a deck code.
      *
      * @param blizzardApiConfig    {@link BlizzardApiConfig} The API configuration for querying the Blizzard API.
      * @param blizzardOauthHandler {@link BlizzardOauthHandler} Handler for Blizzard Oauth access token.
      * @param objectMapper         The object mapper for JSON serialization.
      */
-    public DeckCodeService(BlizzardApiConfig blizzardApiConfig, BlizzardOauthHandler blizzardOauthHandler, ObjectMapper objectMapper) {
+    public DeckCodeService(final BlizzardApiConfig blizzardApiConfig, final BlizzardOauthHandler blizzardOauthHandler, final ObjectMapper objectMapper) {
         this.blizzardApiConfig = blizzardApiConfig;
         this.blizzardOauthHandler = blizzardOauthHandler;
         this.objectMapper = objectMapper;
@@ -49,21 +49,21 @@ public class DeckCodeService {
      * @param deckCode The deck code, a Base64 encoded string parsable by the Hearthstone application that represents a deck.
      * @return {@link CardsModel} that contains the cards in the deck associated with the deck code.
      */
-    public CardsModel getCardsFromCode(String deckCode) {
-        URI deckCodeUri;
+    public CardsModel getCardsFromCode(final String deckCode) {
+        final URI deckCodeUri;
         try {
             deckCodeUri = new URIBuilder(blizzardApiConfig.getHearthstoneBaseUrl() + DECK_CODE_ENDPOINT + "/" + deckCode)
                     .addParameter("locale", blizzardApiConfig.getLocale())
                     .addParameter("access_token", blizzardOauthHandler.retrieveOauthToken().getAccessToken())
                     .build();
-        } catch (URISyntaxException e) {
+        } catch (final URISyntaxException e) {
             throw new IllegalStateException("Error encountered while building URI for retrieving cards from deck code.", e);
         }
 
         try {
             objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
             return objectMapper.readValue(Request.Get(deckCodeUri).execute().returnContent().asString(), CardsModel.class);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new IllegalStateException("Error encountered while attempting to retrieve cards from Blizzard API using the deck code.", e);
         }
     }

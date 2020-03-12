@@ -25,9 +25,9 @@ import java.util.Base64;
 public class BlizzardOauthHandler {
 
     private final Object tokenLock = new Object();
-    private BlizzardOauthEnvConfig envConfig;
-    private BlizzardApiConfig appConfig;
-    private ObjectMapper objectMapper;
+    private final BlizzardOauthEnvConfig envConfig;
+    private final BlizzardApiConfig appConfig;
+    private final ObjectMapper objectMapper;
     private BlizzardOauthToken blizzardOauthToken;
     private Instant tokenExpiration;
 
@@ -38,7 +38,7 @@ public class BlizzardOauthHandler {
      * @param blizzardApiConfig   The {@link BlizzardApiConfig}
      * @param objectMapper        Object mapper for serialization of JSON.
      */
-    public BlizzardOauthHandler(BlizzardOauthEnvConfig blizzardOauthConfig, BlizzardApiConfig blizzardApiConfig, ObjectMapper objectMapper) {
+    public BlizzardOauthHandler(final BlizzardOauthEnvConfig blizzardOauthConfig, final BlizzardApiConfig blizzardApiConfig, final ObjectMapper objectMapper) {
         this.envConfig = blizzardOauthConfig;
         this.appConfig = blizzardApiConfig;
         this.objectMapper = objectMapper;
@@ -52,12 +52,12 @@ public class BlizzardOauthHandler {
     public BlizzardOauthToken retrieveOauthToken() {
         if (tokenIsInvalid()) {
             try {
-                String encodedCredentials = Base64.getEncoder().encodeToString(
+                final String encodedCredentials = Base64.getEncoder().encodeToString(
                         String.format("%s:%s",
                                 envConfig.getClientId(),
                                 envConfig.getClientSecret()).getBytes(appConfig.getEncoding()));
 
-                String oauthResponse = new String(Request.Post(appConfig.getTokenUrl())
+                final String oauthResponse = new String(Request.Post(appConfig.getTokenUrl())
                         .addHeader(HttpHeaders.AUTHORIZATION, String.format("Basic %s", encodedCredentials))
                         .execute()
                         .returnContent().asBytes(),
@@ -68,7 +68,7 @@ public class BlizzardOauthHandler {
                 synchronized (tokenLock) {
                     tokenExpiration = Instant.now().plusSeconds(blizzardOauthToken.getExpiresIn());
                 }
-            } catch (IOException e) {
+            } catch (final IOException e) {
                 throw new IllegalStateException("Error encountered when generating Blizzard OAuth token", e);
             }
         }

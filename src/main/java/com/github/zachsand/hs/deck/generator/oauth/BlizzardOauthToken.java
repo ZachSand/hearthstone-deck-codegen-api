@@ -28,7 +28,7 @@ public class BlizzardOauthToken {
      *
      * @param accessToken The access token from Blizzard Oauth API.
      */
-    public void setAccessToken(String accessToken) {
+    public void setAccessToken(final String accessToken) {
         this.accessToken = accessToken;
     }
 
@@ -44,7 +44,7 @@ public class BlizzardOauthToken {
      *
      * @param tokenType The token type.
      */
-    public void setTokenType(String tokenType) {
+    public void setTokenType(final String tokenType) {
         this.tokenType = tokenType;
     }
 
@@ -60,7 +60,7 @@ public class BlizzardOauthToken {
      *
      * @param expiresIn The seconds from the instant the token was generated that the token expires.
      */
-    public void setExpiresIn(Long expiresIn) {
+    public void setExpiresIn(final Long expiresIn) {
         this.expiresIn = expiresIn;
     }
 }

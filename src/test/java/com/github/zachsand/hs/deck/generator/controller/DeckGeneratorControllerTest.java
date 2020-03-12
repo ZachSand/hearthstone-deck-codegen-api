@@ -1,13 +1,12 @@
 package com.github.zachsand.hs.deck.generator.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.zachsand.hs.deck.generator.model.card.CardModel;
-import com.github.zachsand.hs.deck.generator.model.deck.DeckRequestModel;
-import com.github.zachsand.hs.deck.generator.model.deck.DeckResponseModel;
-import com.github.zachsand.hs.deck.generator.model.deck.DeckResponseStatus;
-import com.github.zachsand.hs.deck.generator.model.deck.validator.DeckRequestValidator;
+import com.github.zachsand.hs.deck.generator.data.entity.CardEntity;
+import com.github.zachsand.hs.deck.generator.data.model.deck.DeckRequestModel;
+import com.github.zachsand.hs.deck.generator.data.model.deck.DeckResponseModel;
+import com.github.zachsand.hs.deck.generator.data.model.deck.DeckResponseStatus;
+import com.github.zachsand.hs.deck.generator.data.model.deck.validator.DeckRequestValidator;
 import com.github.zachsand.hs.deck.generator.service.DeckGeneratorService;
-import com.github.zachsand.hs.deck.generator.service.HearthstoneMetadataService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -36,23 +35,19 @@ public class DeckGeneratorControllerTest {
     private DeckGeneratorService deckGeneratorService;
 
     @MockBean
-    private HearthstoneMetadataService hearthstoneMetadataService;
-
-    @MockBean
     private DeckRequestValidator deckRequestValidator;
 
     @Test
     public void deckGeneratorShouldReturnDeckCode() throws Exception {
-        DeckResponseModel expectedResponse = new DeckResponseModel();
+        final DeckResponseModel expectedResponse = new DeckResponseModel();
         expectedResponse.setStatus(DeckResponseStatus.SUCCESS_RESPONSE);
         expectedResponse.setId(1);
         expectedResponse.setDeckCode("");
-        expectedResponse.setCards(new CardModel[1]);
+        expectedResponse.setCards(new CardEntity[1]);
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        String expectedJson = objectMapper.writeValueAsString(expectedResponse);
+        final ObjectMapper objectMapper = new ObjectMapper();
+        final String expectedJson = objectMapper.writeValueAsString(expectedResponse);
 
-        doNothing().when(hearthstoneMetadataService).refreshMetadata();
         when(deckRequestValidator.validateDeckRequest(any(DeckRequestModel.class))).thenReturn(DeckResponseStatus.SUCCESS_RESPONSE);
         when(deckGeneratorService.generateDeck(any(DeckRequestModel.class))).thenReturn(expectedResponse);
         mockMvc.perform(post("/api/deck")
