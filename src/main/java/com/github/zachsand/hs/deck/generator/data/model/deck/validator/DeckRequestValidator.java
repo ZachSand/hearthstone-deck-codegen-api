@@ -89,7 +89,7 @@ public class DeckRequestValidator {
 
         if (!errorMessages.isEmpty()) {
             deckResponseStatus.setStatus(DeckResponseStatus.ResponseStatus.ERROR.name());
-            deckResponseStatus.setMessage(errorMessages.toArray(new String[0]));
+            deckResponseStatus.setMessage(errorMessages);
         } else {
             return DeckResponseStatus.SUCCESS_RESPONSE;
         }

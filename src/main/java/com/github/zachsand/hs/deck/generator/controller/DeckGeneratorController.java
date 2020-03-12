@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The deck generation controller that controls the deck generation endpoints.
@@ -95,10 +97,10 @@ public class DeckGeneratorController {
         final PrintWriter pw = new PrintWriter(sw);
         e.printStackTrace(pw);
 
-        final String[] errorMessages = new String[3];
-        errorMessages[0] = "Exception encountered while processing the request.";
-        errorMessages[1] = e.getMessage();
-        errorMessages[2] = pw.toString();
+        final List<String> errorMessages = new ArrayList<>();
+        errorMessages.add("Exception encountered while processing the request.");
+        errorMessages.add(e.getMessage());
+        errorMessages.add(pw.toString());
 
         deckResponseStatus.setMessage(errorMessages);
         deckResponseModel.setStatus(deckResponseStatus);

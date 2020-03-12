@@ -1,5 +1,11 @@
 package com.github.zachsand.hs.deck.generator.data.model.deck;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
+import java.util.Collections;
+import java.util.List;
+
 /**
  * Deck response status, naive approach at returning success/errors when there are issues.
  */
@@ -9,11 +15,11 @@ public class DeckResponseStatus {
      * Constant for successful response.
      */
     public static final DeckResponseStatus SUCCESS_RESPONSE = new DeckResponseStatus(ResponseStatus.SUCCESS.name(),
-            new String[]{ResponseStatus.SUCCESS.name()});
+            Collections.singletonList(ResponseStatus.SUCCESS.name()));
 
     private String status;
 
-    private String[] message;
+    private List<String> message;
 
     /**
      * Empty no arg constructor.
@@ -27,7 +33,7 @@ public class DeckResponseStatus {
      * @param status  The {@link ResponseStatus} of the response.
      * @param message The messages of the response.
      */
-    public DeckResponseStatus(final String status, final String[] message) {
+    public DeckResponseStatus(final String status, final List<String> message) {
         this.status = status;
         this.message = message;
     }
@@ -51,7 +57,7 @@ public class DeckResponseStatus {
     /**
      * @return The messages for the response.
      */
-    public String[] getMessage() {
+    public List<String> getMessage() {
         return message;
     }
 
@@ -60,8 +66,38 @@ public class DeckResponseStatus {
      *
      * @param message The messages for the response.
      */
-    public void setMessage(final String[] message) {
+    public void setMessage(final List<String> message) {
         this.message = message;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+
+        if (o == null || getClass() != o.getClass()) return false;
+
+        final DeckResponseStatus that = (DeckResponseStatus) o;
+
+        return new EqualsBuilder()
+                .append(status, that.status)
+                .append(message, that.message)
+                .isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37)
+                .append(status)
+                .append(message)
+                .toHashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "DeckResponseStatus{" +
+                "status='" + status + '\'' +
+                ", message=" + message +
+                '}';
     }
 
     public enum ResponseStatus {
