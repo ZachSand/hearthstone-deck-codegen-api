@@ -1,6 +1,8 @@
 package com.github.zachsand.hs.deck.generator.data.model.deck;
 
-import com.github.zachsand.hs.deck.generator.data.entity.CardEntity;
+import com.github.zachsand.hs.deck.generator.data.model.card.CardModel;
+
+import java.util.List;
 
 /**
  * The deck response model for holding the details of the generated deck.
@@ -13,7 +15,7 @@ public class DeckResponseModel {
 
     private String deckCode;
 
-    private CardEntity[] cards;
+    private List<CardModel> cards;
 
     /**
      * @return The ID of the deck.
@@ -50,7 +52,7 @@ public class DeckResponseModel {
     /**
      * @return The cards in the deck.
      */
-    public CardEntity[] getCards() {
+    public List<CardModel> getCards() {
         return cards;
     }
 
@@ -59,7 +61,7 @@ public class DeckResponseModel {
      *
      * @param cards The cards in the deck.
      */
-    public void setCards(final CardEntity[] cards) {
+    public void setCards(final List<CardModel> cards) {
         this.cards = cards;
     }
 

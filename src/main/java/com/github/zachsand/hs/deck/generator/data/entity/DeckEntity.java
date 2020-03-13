@@ -3,6 +3,7 @@ package com.github.zachsand.hs.deck.generator.data.entity;
 import com.github.zachsand.hs.deck.generator.data.model.deck.GameFormat;
 
 import javax.persistence.*;
+import java.util.List;
 
 /**
  * The deck entity. This entity holds the generated deck information.
@@ -21,6 +22,9 @@ public class DeckEntity {
 
     @Enumerated(EnumType.STRING)
     private GameFormat gameFormat;
+
+    @OneToMany
+    private List<CardEntity> cards;
 
     /**
      * @return The ID of the deck entity.
@@ -84,5 +88,21 @@ public class DeckEntity {
      */
     public void setGameFormat(final GameFormat gameFormat) {
         this.gameFormat = gameFormat;
+    }
+
+    /**
+     * @return List of {@link CardEntity} for this deck.
+     */
+    public List<CardEntity> getCards() {
+        return cards;
+    }
+
+    /**
+     * Sets the List of {@link CardEntity} for this deck.
+     *
+     * @param cards List of {@link CardEntity} for this deck.
+     */
+    public void setCards(final List<CardEntity> cards) {
+        this.cards = cards;
     }
 }

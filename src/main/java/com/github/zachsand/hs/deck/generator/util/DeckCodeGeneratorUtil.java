@@ -1,5 +1,6 @@
 package com.github.zachsand.hs.deck.generator.util;
 
+import com.github.zachsand.hs.deck.generator.data.entity.CardEntity;
 import com.github.zachsand.hs.deck.generator.data.model.card.CardsModel;
 import com.github.zachsand.hs.deck.generator.data.model.deck.GameFormat;
 
@@ -24,18 +25,18 @@ public class DeckCodeGeneratorUtil {
     /**
      * Generates a deck code based on the {@link CardsModel}.
      *
-     * @param cardIds    The Set of card IDs to make a deck code.
+     * @param cards      List of {@link CardEntity} to make a deck code.
      * @param heroCardId ID representing the hero to use for generating the deck.
      * @param gameFormat The {@link GameFormat} to use for generating the deck.
      * @return The deck code, a Base64 encoded string parsable by the Hearthstone application that represents a deck.
      */
-    public static String generateDeckCode(final Set<Integer> cardIds, final int heroCardId, final String gameFormat) {
+    public static String generateDeckCode(final List<CardEntity> cards, final int heroCardId, final String gameFormat) {
         final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         final DataOutputStream deckCodeOutStream = new DataOutputStream(byteArrayOutputStream);
 
         try {
             deckCodeOutStream.write(generateHeaderBlock(gameFormat));
-            deckCodeOutStream.write(generateCardsBlock(cardIds, heroCardId));
+            deckCodeOutStream.write(generateCardsBlock(cards, heroCardId));
             deckCodeOutStream.flush();
             deckCodeOutStream.close();
             byteArrayOutputStream.close();
@@ -86,18 +87,19 @@ public class DeckCodeGeneratorUtil {
      *     </ol>
      * </p>
      *
-     * @param cardIds    The Set of card IDs to make a deck code.
+     * @param cards      List of {@link CardEntity} to make a deck code.
      * @param heroCardId ID representing the hero to use for generating the deck.
      * @return byte array representing the cards block for the deck code.
      * @see <a href="https://en.wikipedia.org/wiki/Variable-length_quantity target="_top"">
      * https://en.wikipedia.org/wiki/Variable-length_quantity</a>
      */
-    private static byte[] generateCardsBlock(final Set<Integer> cardIds, final int heroCardId) {
+    private static byte[] generateCardsBlock(final List<CardEntity> cards, final int heroCardId) {
         final List<Byte> cardsBlock = new ArrayList<>();
         cardsBlock.addAll(getVarIntBytes(NUMBER_OF_HEROES));
         cardsBlock.addAll(getVarIntBytes(heroCardId));
 
-        final Set<Integer> doubleQuantityCards = cardIds.stream()
+        final Set<Integer> doubleQuantityCards = cards.stream()
+                .map(CardEntity::getId)
                 .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
                 .entrySet()
                 .stream()
@@ -105,7 +107,8 @@ public class DeckCodeGeneratorUtil {
                 .map(Map.Entry::getKey)
                 .collect(Collectors.toSet());
 
-        final Set<Integer> singleQuantityCards = cardIds.stream()
+        final Set<Integer> singleQuantityCards = cards.stream()
+                .map(CardEntity::getId)
                 .filter(Predicate.not(doubleQuantityCards::contains))
                 .collect(Collectors.toSet());
 

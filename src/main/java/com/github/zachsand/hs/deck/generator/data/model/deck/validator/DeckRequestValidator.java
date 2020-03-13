@@ -28,6 +28,7 @@ import java.util.stream.Collectors;
 public class DeckRequestValidator {
 
     private static final int DECK_MAX_SIZE = 30;
+    private static final int NUM_CARD_COPIES_ALLOWED = 2;
     private static final String NEUTRAL_CLASS_SLUG_NAME = "neutral";
     private final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
@@ -119,6 +120,7 @@ public class DeckRequestValidator {
             if (!deckSet.getSetName().equals(DeckSetModel.CUSTOM_SET_USE_ALL)) {
                 errorMessages.addAll(validateDeckSetHelper(deckRequestModel, resolvedGameFormat, deckSet));
             }
+
         }
 
         if (deckCount > DECK_MAX_SIZE) {
@@ -164,16 +166,16 @@ public class DeckRequestValidator {
 
     private List<String> validateSetHasEnoughCards(final DeckRequestModel deckRequestModel, final DeckSetModel deckSet) {
         final List<String> errorMessages = new ArrayList<>();
-        final int classCardCountForSet = cardService.getCardCountForClassAndSet(deckRequestModel.getClassName(), deckSet.getSetName());
+        final int classCardCountForSet = cardService.getCardCountForClassAndSet(deckRequestModel.getClassName(), deckSet.getSetName()) * NUM_CARD_COPIES_ALLOWED;
         if (classCardCountForSet < deckSet.getClassSetCount()) {
             errorMessages.add("Class " + deckRequestModel.getClassName() + " does not have " + deckSet.getClassSetCount() + " class card(s) available in set "
-                    + deckSet.getSetName() + ": Only " + classCardCountForSet + " were found for the class and set combination");
+                    + deckSet.getSetName() + ": Only " + classCardCountForSet + " were found for the class and set combination (includes duplicates)");
         }
 
-        final int neutralCardCountForSet = cardService.getCardCountForClassAndSet(NEUTRAL_CLASS_SLUG_NAME, deckSet.getSetName());
-        if (neutralCardCountForSet < deckSet.getNeutralSetCount()) {
+        final int neutralCardCountForSet = cardService.getCardCountForClassAndSet(NEUTRAL_CLASS_SLUG_NAME, deckSet.getSetName()) * NUM_CARD_COPIES_ALLOWED;
+        if (neutralCardCountForSet < deckSet.getNeutralSetCount() * 2) {
             errorMessages.add("Set " + deckSet.getSetName() + " does not have " + deckSet.getNeutralSetCount() + " " +
-                    NEUTRAL_CLASS_SLUG_NAME + " cards. Only " + neutralCardCountForSet + " were found.");
+                    NEUTRAL_CLASS_SLUG_NAME + " cards. Only " + neutralCardCountForSet + " were found (includes duplicates).");
         }
         return errorMessages;
     }

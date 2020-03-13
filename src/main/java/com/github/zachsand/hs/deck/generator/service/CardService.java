@@ -138,24 +138,38 @@ public class CardService {
      * @param setSlugName   Set slug name to find cards.
      * @param classSlugName Class slug name to find cards.
      * @param limit         Limit of cards to return.
-     * @return Set of random cards IDs based on the parameters.
+     * @return List of random cards IDs based on the parameters.
      */
-    public Set<Integer> getRandomSetCards(final String setSlugName, final String classSlugName, final int limit) {
-        return cardRepository.findRandomCardIdsByClassAndSetWithLimit(
+    public List<CardEntity> getRandomSetCards(final String setSlugName, final String classSlugName, final int limit) {
+        return cardRepository.findRandomCardsByClassAndSetWithLimit(
                 setMetadataService.getSetMetadataBySlugName(setSlugName).getId(),
                 classMetadataService.getClassMetadataForSlug(classSlugName).getId(),
                 limit);
     }
 
     /**
-     * Retrieves random cards based on the class name.
+     * Retrieves random cards based on the class name. If the class slug name is neutral, neutral cards will be returned.
      *
      * @param classSlugName Class slug name to find cards.
      * @param limit         Limit of cards to return.
-     * @return Set of random cards IDs based on the parameters.
+     * @return List of random cards IDs based on the parameters.
      */
-    public Set<Integer> getRandomCards(final String classSlugName, final int limit) {
-        return cardRepository.findRandomCardIdsByClassWithLimit(
+    public List<CardEntity> getRandomCards(final String classSlugName, final int limit) {
+        return cardRepository.findRandomCardsByClassWithLimit(
+                classMetadataService.getClassMetadataForSlug(classSlugName).getId(),
+                limit);
+    }
+
+    /**
+     * Retrieves random cards from the standard set group based on the class name. If the class slug name is neutral,
+     * neutral cards will be returned.
+     *
+     * @param classSlugName Class slug name to find cards.
+     * @param limit         Limit of cards to return.
+     * @return List of random cards IDs based on the parameters.
+     */
+    public List<CardEntity> getRandomStandardCards(final String classSlugName, final int limit) {
+        return cardRepository.findRandomStandardCardsByClassWithLimit(
                 classMetadataService.getClassMetadataForSlug(classSlugName).getId(),
                 limit);
     }

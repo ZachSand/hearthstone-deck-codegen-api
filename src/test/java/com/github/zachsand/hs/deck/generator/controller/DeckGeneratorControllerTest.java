@@ -1,7 +1,7 @@
 package com.github.zachsand.hs.deck.generator.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.zachsand.hs.deck.generator.data.entity.CardEntity;
+import com.github.zachsand.hs.deck.generator.data.model.card.CardModel;
 import com.github.zachsand.hs.deck.generator.data.model.deck.DeckRequestModel;
 import com.github.zachsand.hs.deck.generator.data.model.deck.DeckResponseModel;
 import com.github.zachsand.hs.deck.generator.data.model.deck.DeckResponseStatus;
@@ -13,6 +13,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+
+import java.util.Collections;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
@@ -43,7 +45,7 @@ public class DeckGeneratorControllerTest {
         expectedResponse.setStatus(DeckResponseStatus.SUCCESS_RESPONSE);
         expectedResponse.setId(1);
         expectedResponse.setDeckCode("");
-        expectedResponse.setCards(new CardEntity[1]);
+        expectedResponse.setCards(Collections.singletonList(new CardModel()));
 
         final ObjectMapper objectMapper = new ObjectMapper();
         final String expectedJson = objectMapper.writeValueAsString(expectedResponse);
