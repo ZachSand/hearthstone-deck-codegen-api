@@ -103,13 +103,10 @@ public class ClassMetadataService {
         }
 
         try {
-            /* The first JSON object in the response is the "all" object which has an asterisk as it's ID which doesn't work
-             * with the CardEntityModel which only has integer as ID. So deserialize all but the first object containing the '*'.
-             */
             final String classMetadataResponse = Request.Get(classMetaDataUri).execute().returnContent().asString();
             final JSONArray classMetadataArr = new JSONArray(classMetadataResponse);
             final List<ClassMetadataEntity> classMetadataEntities = new ArrayList<>();
-            for (int i = 1; i < classMetadataArr.length(); i++) {
+            for (int i = 0; i < classMetadataArr.length(); i++) {
                 classMetadataEntities.add(objectMapper.readValue(classMetadataArr.getString(i), ClassMetadataEntity.class));
             }
             return classMetadataEntities;

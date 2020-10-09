@@ -5,6 +5,7 @@ import com.github.zachsand.hs.deck.generator.data.model.deck.DeckResponseModel;
 import com.github.zachsand.hs.deck.generator.data.model.deck.DeckResponseStatus;
 import com.github.zachsand.hs.deck.generator.data.model.deck.validator.DeckRequestValidator;
 import com.github.zachsand.hs.deck.generator.service.DeckGeneratorService;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
@@ -15,7 +16,9 @@ import org.springframework.web.bind.annotation.*;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * The deck generation controller that controls the deck generation endpoints.
@@ -93,14 +96,15 @@ public class DeckGeneratorController {
         final DeckResponseStatus deckResponseStatus = new DeckResponseStatus();
         deckResponseStatus.setStatus(DeckResponseStatus.ResponseStatus.ERROR.name());
 
-        final StringWriter sw = new StringWriter();
-        final PrintWriter pw = new PrintWriter(sw);
-        e.printStackTrace(pw);
-
         final List<String> errorMessages = new ArrayList<>();
         errorMessages.add("Exception encountered while processing the request.");
-        errorMessages.add(e.getMessage());
-        errorMessages.add(pw.toString());
+        errorMessages.add(ExceptionUtils.getMessage(e));
+        Optional<String> firstFrameInProject = Arrays.stream(ExceptionUtils.getStackFrames(e))
+            .filter(stackFrame -> stackFrame.contains("com.github.zachsand.hs.deck.generator"))
+            .findFirst();
+        if(firstFrameInProject.isPresent()) {
+            errorMessages.add(firstFrameInProject.get());
+        }
 
         deckResponseStatus.setMessage(errorMessages);
         deckResponseModel.setStatus(deckResponseStatus);

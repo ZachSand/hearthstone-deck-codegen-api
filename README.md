@@ -22,8 +22,16 @@ This will build a docker image from the Spring Boot application and the Postgres
 They will be wired up together using the docker compose file. The application will be
 available on localhost:8080
 
-Otherwise, a Postgres database will need to be configured with the details from the application.yml
-in the src/main/resources/local folder. Once the database is set up, build the project with Maven
+Otherwise, a Postgres database will need to be configured with the details from the [application.yml](https://github.com/ZachSand/hearthstone-deck-codegen-api/blob/master/src/main/resources/local/application.yml).
+Then create the role and the database.
+```
+psql postgres
+create role root with superuser;
+alter role root with password 'deckgen';
+alter role root with login;
+createdb hearthstone_db
+```
+Once the database is set up, build the project with Maven
 and run:
 ```
 mvn spring-boot:run
@@ -45,7 +53,7 @@ Simple example JSON request to the application (POST to localhost:8080/deckgener
 }
 ```
 More detailed example JSON request (POST to localhost:8080/deckgenerator/api/deck)
-```$xslt
+```
 {
   "className": "warrior",
   "gameFormat": "wild",
