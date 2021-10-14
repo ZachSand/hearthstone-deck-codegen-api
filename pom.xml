@@ -9,12 +9,12 @@
     <packaging>jar</packaging>
 
     <name>hearthstone-deck-generator</name>
-    <description>An API for generating hearthstone decks</description>
+    <description>An API for generating hearthstone deck codes</description>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.3.4.RELEASE</version>
+        <version>2.5.5</version>
     </parent>
 
     <properties>
@@ -65,7 +65,12 @@
         <dependency>
             <groupId>org.modelmapper</groupId>
             <artifactId>modelmapper</artifactId>
-            <version>2.3.8</version>
+            <version>2.4.4</version>
+        </dependency>
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20210307</version>
         </dependency>
 
         <!-- Test Dependencies -->
@@ -114,7 +119,7 @@
                     <plugin>
                         <groupId>com.google.cloud.tools</groupId>
                         <artifactId>jib-maven-plugin</artifactId>
-                        <version>2.6.0</version>
+                        <version>3.1.4</version>
                         <configuration>
                             <to>
                                 <image>hearthstone-deck-codegen-api</image>

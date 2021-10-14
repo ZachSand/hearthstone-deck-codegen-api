@@ -1,84 +1,75 @@
 package com.github.zachsand.hs.deck.generator.data.model.deck.validator;
 
-import com.github.zachsand.hs.deck.generator.data.entity.ClassMetadataEntity;
-import com.github.zachsand.hs.deck.generator.data.model.deck.DeckRequestModel;
-import com.github.zachsand.hs.deck.generator.data.model.deck.DeckResponseStatus;
-import com.github.zachsand.hs.deck.generator.data.model.deck.DeckSetModel;
-import com.github.zachsand.hs.deck.generator.data.model.deck.GameFormat;
-import com.github.zachsand.hs.deck.generator.service.CardService;
-import com.github.zachsand.hs.deck.generator.service.ClassMetadataService;
-import com.github.zachsand.hs.deck.generator.service.SetGroupMetadataService;
-import com.github.zachsand.hs.deck.generator.service.SetMetadataService;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.when;
+
+import java.util.Collections;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Collections;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
+import com.github.zachsand.hs.deck.generator.data.entity.ClassMetadataEntity;
+import com.github.zachsand.hs.deck.generator.data.model.deck.DeckRequestModel;
+import com.github.zachsand.hs.deck.generator.data.model.deck.DeckResponseStatus;
+import com.github.zachsand.hs.deck.generator.data.model.deck.DeckSetModel;
+import com.github.zachsand.hs.deck.generator.data.model.deck.GameFormat;
+import com.github.zachsand.hs.deck.generator.service.ClassMetadataService;
 
 @ExtendWith(MockitoExtension.class)
-public class DeckRequestValidatorTest {
+class DeckRequestValidatorTest {
 
-    @Mock
-    private SetGroupMetadataService setGroupMetadataService;
+	@Mock
+	private ClassMetadataService classMetadataService;
 
-    @Mock
-    private SetMetadataService setMetadataService;
+	@InjectMocks
+	private DeckRequestValidator deckRequestValidator;
 
-    @Mock
-    private ClassMetadataService classMetadataService;
+	@Test
+	void whenValidRequest_shouldHaveSuccessResponse() {
+		final DeckRequestModel deckRequestModel = getValidDeckRequestModel();
 
-    @Mock
-    private CardService cardService;
+		final ClassMetadataEntity classMetadataEntity = new ClassMetadataEntity();
+		classMetadataEntity.setSlug("hunter");
 
-    @InjectMocks
-    private DeckRequestValidator deckRequestValidator;
+		when(classMetadataService.getClassMetadata()).thenReturn(Collections.singletonList(classMetadataEntity));
 
-    @Test
-    public void whenValidRequest_shouldHaveSuccessResponse() {
-        final DeckRequestModel deckRequestModel = getValidDeckRequestModel();
+		assertEquals(DeckResponseStatus.SUCCESS_RESPONSE, deckRequestValidator.validateDeckRequest(deckRequestModel));
+	}
 
-        final ClassMetadataEntity classMetadataEntity = new ClassMetadataEntity();
-        classMetadataEntity.setSlug("hunter");
+	@Test
+	void whenInvalidGameType_shouldHaveErrorResponse() {
+		final String invalidGameFormat = "notagameformat";
+		final DeckRequestModel deckRequestModel = getValidDeckRequestModel();
+		deckRequestModel.setGameFormat(invalidGameFormat);
 
-        when(classMetadataService.getClassMetadata()).thenReturn(Collections.singletonList(classMetadataEntity));
+		final ClassMetadataEntity classMetadataEntity = new ClassMetadataEntity();
+		classMetadataEntity.setSlug("hunter");
 
-        assertEquals(DeckResponseStatus.SUCCESS_RESPONSE, deckRequestValidator.validateDeckRequest(deckRequestModel));
-    }
+		when(classMetadataService.getClassMetadata()).thenReturn(Collections.singletonList(classMetadataEntity));
 
-    @Test
-    public void whenInvalidGameType_shouldHaveErrorResponse() {
-        final String invalidGameFormat = "notagameformat";
-        final DeckRequestModel deckRequestModel = getValidDeckRequestModel();
-        deckRequestModel.setGameFormat(invalidGameFormat);
+		final DeckResponseStatus deckResponseStatus = deckRequestValidator.validateDeckRequest(deckRequestModel);
+		assertEquals(DeckResponseStatus.ResponseStatus.ERROR.name(), deckResponseStatus.getStatus());
+		assertFalse(deckResponseStatus.getMessage().isEmpty());
+		assertTrue(deckResponseStatus.getMessage().toString().contains(invalidGameFormat));
 
-        final ClassMetadataEntity classMetadataEntity = new ClassMetadataEntity();
-        classMetadataEntity.setSlug("hunter");
+	}
 
-        when(classMetadataService.getClassMetadata()).thenReturn(Collections.singletonList(classMetadataEntity));
+	private DeckRequestModel getValidDeckRequestModel() {
+		final DeckRequestModel deckRequestModel = new DeckRequestModel();
+		deckRequestModel.setClassName("hunter");
+		deckRequestModel.setGameFormat(GameFormat.STANDARD.name().toLowerCase());
 
-        final DeckResponseStatus deckResponseStatus = deckRequestValidator.validateDeckRequest(deckRequestModel);
-        assertEquals(DeckResponseStatus.ResponseStatus.ERROR.name(), deckResponseStatus.getStatus());
-        assertFalse(deckResponseStatus.getMessage().isEmpty());
-        assertTrue(deckResponseStatus.getMessage().toString().contains(invalidGameFormat));
-
-    }
-
-    private DeckRequestModel getValidDeckRequestModel() {
-        final DeckRequestModel deckRequestModel = new DeckRequestModel();
-        deckRequestModel.setClassName("hunter");
-        deckRequestModel.setGameFormat(GameFormat.STANDARD.name().toLowerCase());
-
-        final DeckSetModel deckSet = new DeckSetModel();
-        deckSet.setClassSetCount(10);
-        deckSet.setNeutralSetCount(20);
-        deckSet.setSetName("all");
-        deckRequestModel.setDeckSets(Collections.singletonList(deckSet));
-        return deckRequestModel;
-    }
+		final DeckSetModel deckSet = new DeckSetModel();
+		deckSet.setClassSetCount(10);
+		deckSet.setNeutralSetCount(20);
+		deckSet.setSetName("all");
+		deckRequestModel.setDeckSets(Collections.singletonList(deckSet));
+		return deckRequestModel;
+	}
 
 }
