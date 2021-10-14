@@ -23,7 +23,7 @@ server:
   port: 8080
 
 
-blizzard:
+battlenet:
   api:
     encoding: UTF-8
     token-url: https://us.battle.net/oauth/token?grant_type=client_credentials

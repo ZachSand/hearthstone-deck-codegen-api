@@ -8,25 +8,25 @@ Configuration:
         Pattern: "[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n"
 
     RollingFile:
-      - name: LogToRollingFile
-        fileName: logs/app.log
-        filePattern: "logs/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.log.gz"
-        PatternLayout:
-          pattern: "[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n"
-        Policies:
-          SizeBasedTriggeringPolicy:
-            size: 2MB
-        DefaultRollOverStrategy:
-          max: 5
+    - name: LogToRollingFile
+      fileName: logs/app.log
+      filePattern: "logs/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.log.gz"
+      PatternLayout:
+        pattern: "[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n"
+      Policies:
+        SizeBasedTriggeringPolicy:
+          size: 2MB
+      DefaultRollOverStrategy:
+        max: 5
 
   Loggers:
     logger:
-      - name: com.github.zachsand.hs.deck.generator
-        level: debug
-        additivity: false
-        AppenderRef:
-          - ref: LogToConsole
-          - ref: LogToRollingFile
+    - name: com.github.zachsand.hs.deck.generator
+      level: debug
+      additivity: false
+      AppenderRef:
+      - ref: LogToConsole
+      - ref: LogToRollingFile
 
     Root:
       level: debug
