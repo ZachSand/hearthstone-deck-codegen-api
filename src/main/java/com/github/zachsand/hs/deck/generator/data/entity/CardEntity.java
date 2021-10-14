@@ -24,9 +24,7 @@ public class CardEntity {
 
 	@Id
 	private Integer id;
-
 	private int collectible;
-
 	private String slug;
 
 	@ManyToOne
@@ -42,21 +40,13 @@ public class CardEntity {
 	private SetMetadataEntity setMetadata;
 
 	private int rarityId;
-
 	private String artistName;
-
 	private int manaCost;
-
 	private String name;
-
 	private String text;
-
 	private String image;
-
 	private String imageGold;
-
 	private String flavorText;
-
 	private String cropImage;
 
 	/**

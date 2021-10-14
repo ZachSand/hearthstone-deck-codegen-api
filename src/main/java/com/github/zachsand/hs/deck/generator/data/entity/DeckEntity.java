@@ -25,7 +25,6 @@ public class DeckEntity {
 	private int id;
 
 	private String deckCode;
-
 	private String className;
 
 	@Enumerated(EnumType.STRING)

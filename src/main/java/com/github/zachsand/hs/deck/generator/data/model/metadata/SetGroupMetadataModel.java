@@ -11,15 +11,10 @@ import java.util.List;
 public class SetGroupMetadataModel {
 
 	private String slug;
-
 	private int year;
-
 	private List<String> cardSets;
-
 	private String name;
-
 	private boolean standard;
-
 	private String icon;
 
 	/**

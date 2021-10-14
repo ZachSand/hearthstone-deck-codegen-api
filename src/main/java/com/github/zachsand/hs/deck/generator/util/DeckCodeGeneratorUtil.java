@@ -75,7 +75,7 @@ public class DeckCodeGeneratorUtil {
 		final List<Byte> headerBytes = new ArrayList<>();
 		headerBytes.addAll(getVarIntBytes(EMPTY_HEADER));
 		headerBytes.addAll(getVarIntBytes(ENCODING_VERSION_NUMBER));
-		headerBytes.addAll(getVarIntBytes(GameFormat.valueOf(gameFormat.toUpperCase()).getGameFormat()));
+		headerBytes.addAll(getVarIntBytes(GameFormat.valueOf(gameFormat.toUpperCase()).getFormat()));
 		return convertByteListToArr(headerBytes);
 	}
 

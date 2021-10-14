@@ -30,9 +30,7 @@ public class SetGroupMetadataEntity {
 	private Set<SetMetadataEntity> cardSets;
 
 	private String name;
-
 	private boolean standard;
-
 	private String icon;
 
 	/**

@@ -25,9 +25,7 @@ public class ClassMetadataEntity {
 	private Integer id;
 
 	private String name;
-
 	private String slug;
-
 	private int cardId;
 
 	/**

@@ -18,7 +18,6 @@ package com.github.zachsand.hs.deck.generator.data.model.card;
 public class CardPageModel {
 
 	private int pageCount;
-
 	private int cardCount;
 
 	/**

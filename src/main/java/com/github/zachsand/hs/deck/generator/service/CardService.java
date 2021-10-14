@@ -11,6 +11,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.github.zachsand.hs.deck.generator.client.BattlenetClient;
@@ -72,7 +73,7 @@ public class CardService {
 		try {
 			objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
 			return objectMapper.readValue(battlenetClient.retrieveCardSearchPageData(), CardPageModel.class);
-		} catch (final IOException e) {
+		} catch (final JsonProcessingException e) {
 			throw new IllegalStateException("Error encountered while retrieving cards max page from Blizzard API", e);
 		}
 	}
@@ -88,7 +89,7 @@ public class CardService {
 		try {
 			objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
 			cardRepository.saveAll(
-					mapCardModelToEntity(objectMapper.readValue(battlenetClient.retrieveAndPersistCardPage(pageNum), CardsModel.class)
+					mapCardModelToEntity(objectMapper.readValue(battlenetClient.retrieveCardPage(pageNum), CardsModel.class)
 							.getCards()));
 		} catch (final IOException e) {
 			throw new IllegalStateException("Error encountered while retrieving cards from Blizzard API", e);

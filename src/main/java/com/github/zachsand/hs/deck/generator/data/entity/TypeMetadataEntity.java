@@ -19,10 +19,9 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 public class TypeMetadataEntity {
 
 	@Id
-	public int id;
+	private int id;
 
-	public String slug;
-
+	private String slug;
 	public String name;
 
 	public int getId() {

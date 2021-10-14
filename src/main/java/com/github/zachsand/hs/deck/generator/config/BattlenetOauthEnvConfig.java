@@ -23,7 +23,6 @@ public class BattlenetOauthEnvConfig {
 	public static final String MISSING_ENV_VARIABLE_MESSAGE_FORMAT = "Environment Variable %s must be specified.";
 
 	private String clientId;
-
 	private String clientSecret;
 
 	/**

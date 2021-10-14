@@ -7,16 +7,16 @@ public enum GameFormat {
 	WILD(1),
 	STANDARD(2);
 
-	private final int gameFormat;
+	private final int format;
 
 	GameFormat(final int gameFormat) {
-		this.gameFormat = gameFormat;
+		this.format = gameFormat;
 	}
 
 	/**
 	 * @return The {@link GameFormat}.
 	 */
-	public int getGameFormat() {
-		return gameFormat;
+	public int getFormat() {
+		return format;
 	}
 }
