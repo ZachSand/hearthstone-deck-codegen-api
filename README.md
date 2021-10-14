@@ -4,15 +4,15 @@ API for generating hearthstone deck codes that can be imported into the Blizzard
 
 [![CircleCI](https://circleci.com/gh/ZachSand/hearthstone-deck-codegen-api.svg?style=svg)](https://circleci.com/gh/ZachSand/hearthstone-deck-codegen-api)
 
-**This project is currently just a personal sandbox for testing and using the Hearthtstone Battlenet API, however it is
-usable**
+**This project is currently just a personal sandbox for testing and using the Hearthtstone Blizzard API and Battlenet
+Oauth, however it is usable**
 
 ## Prerequisites
 
 - Obtain Battlenet client ID and secret from [Battlenet API](https://develop.battle.net/)
 - Set system environment variables:
-- BATTLENET_CLIENT_ID=ac8a2f7b17a44b26beaca3cbb928be97
-- BATTLENET_CLIENT_SECRET=DDuLK4n2OyMpbRgjUqLUPy4YFC3euBdt
+- BATTLENET_CLIENT_ID
+- BATTLENET_CLIENT_SECRET
 
 ## Quick Start
 
