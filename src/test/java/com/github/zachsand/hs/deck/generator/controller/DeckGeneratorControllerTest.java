@@ -29,7 +29,7 @@ import com.github.zachsand.hs.deck.generator.service.DeckGeneratorService;
  * Tests for the Deck generator controller.
  */
 @WebMvcTest(DeckGeneratorController.class)
-public class DeckGeneratorControllerTest {
+class DeckGeneratorControllerTest {
 
 	@Autowired
 	private MockMvc mockMvc;
@@ -41,7 +41,7 @@ public class DeckGeneratorControllerTest {
 	private DeckRequestValidator deckRequestValidator;
 
 	@Test
-	public void deckGeneratorShouldReturnDeckCode() throws Exception {
+	void deckGeneratorShouldReturnDeckCode() throws Exception {
 		final DeckResponseModel expectedResponse = new DeckResponseModel();
 		expectedResponse.setStatus(DeckResponseStatus.SUCCESS_RESPONSE);
 		expectedResponse.setId(1);
@@ -62,7 +62,7 @@ public class DeckGeneratorControllerTest {
 	}
 
 	@Test
-	public void shouldDeleteDeck() throws Exception {
+	void shouldDeleteDeck() throws Exception {
 		doNothing().when(deckGeneratorService).deleteDeck(any(Integer.class));
 		mockMvc.perform(delete("/api/deck/1")).andExpect(status().isNoContent());
 	}

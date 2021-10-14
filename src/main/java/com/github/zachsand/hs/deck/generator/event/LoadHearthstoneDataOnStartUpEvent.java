@@ -19,13 +19,9 @@ import com.github.zachsand.hs.deck.generator.service.TypeMetadataService;
 public class LoadHearthstoneDataOnStartUpEvent {
 
 	private final CardService cardService;
-
 	private final ClassMetadataService classMetadataService;
-
 	private final SetMetadataService setMetadataService;
-
 	private final SetGroupMetadataService setGroupMetadataService;
-
 	private final TypeMetadataService typeMetadataService;
 
 	/**

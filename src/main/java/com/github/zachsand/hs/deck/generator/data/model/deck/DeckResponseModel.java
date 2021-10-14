@@ -10,11 +10,8 @@ import com.github.zachsand.hs.deck.generator.data.model.card.CardModel;
 public class DeckResponseModel {
 
 	private DeckResponseStatus status;
-
 	private int id;
-
 	private String deckCode;
-
 	private List<CardModel> cards;
 
 	/**

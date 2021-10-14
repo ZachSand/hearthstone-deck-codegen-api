@@ -22,7 +22,6 @@ import com.github.zachsand.hs.deck.generator.config.BattlenetApiConfig;
 import com.github.zachsand.hs.deck.generator.data.entity.ClassMetadataEntity;
 import com.github.zachsand.hs.deck.generator.data.model.card.CardPageModel;
 import com.github.zachsand.hs.deck.generator.oauth.BattlenetOauthHandler;
-import com.github.zachsand.hs.deck.generator.service.CardService;
 
 @Component
 public class BattlenetClient {
@@ -71,13 +70,12 @@ public class BattlenetClient {
 	}
 
 	/**
-	 * Retrieve cards from the Battlenet API using the {@link BattlenetApiConfig} pageSize and the given page number and
-	 * persists them to the database. Should be used in conjunction with {@link CardService#retrieveCardSearchPageData()}.
+	 * Retrieve cards from the Battlenet API using the {@link BattlenetApiConfig} pageSize and the given page number.
 	 *
 	 * @param pageNum
 	 *            The page number to use in the request to the Battlenet Card Search API.
 	 */
-	public String retrieveAndPersistCardPage(final int pageNum) {
+	public String retrieveCardPage(final int pageNum) {
 		try {
 			return sendRequest(HttpRequest.newBuilder()
 					.uri(new URIBuilder(battlenetApiConfig.getHearthstoneBaseUrl() + CARD_ENDPOINT)

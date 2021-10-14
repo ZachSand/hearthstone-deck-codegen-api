@@ -18,31 +18,19 @@ import com.github.zachsand.hs.deck.generator.data.model.deck.DeckRequestModel;
 import com.github.zachsand.hs.deck.generator.data.model.deck.DeckResponseStatus;
 import com.github.zachsand.hs.deck.generator.data.model.deck.DeckSetModel;
 import com.github.zachsand.hs.deck.generator.data.model.deck.GameFormat;
-import com.github.zachsand.hs.deck.generator.service.CardService;
 import com.github.zachsand.hs.deck.generator.service.ClassMetadataService;
-import com.github.zachsand.hs.deck.generator.service.SetGroupMetadataService;
-import com.github.zachsand.hs.deck.generator.service.SetMetadataService;
 
 @ExtendWith(MockitoExtension.class)
-public class DeckRequestValidatorTest {
-
-	@Mock
-	private SetGroupMetadataService setGroupMetadataService;
-
-	@Mock
-	private SetMetadataService setMetadataService;
+class DeckRequestValidatorTest {
 
 	@Mock
 	private ClassMetadataService classMetadataService;
-
-	@Mock
-	private CardService cardService;
 
 	@InjectMocks
 	private DeckRequestValidator deckRequestValidator;
 
 	@Test
-	public void whenValidRequest_shouldHaveSuccessResponse() {
+	void whenValidRequest_shouldHaveSuccessResponse() {
 		final DeckRequestModel deckRequestModel = getValidDeckRequestModel();
 
 		final ClassMetadataEntity classMetadataEntity = new ClassMetadataEntity();
@@ -54,7 +42,7 @@ public class DeckRequestValidatorTest {
 	}
 
 	@Test
-	public void whenInvalidGameType_shouldHaveErrorResponse() {
+	void whenInvalidGameType_shouldHaveErrorResponse() {
 		final String invalidGameFormat = "notagameformat";
 		final DeckRequestModel deckRequestModel = getValidDeckRequestModel();
 		deckRequestModel.setGameFormat(invalidGameFormat);

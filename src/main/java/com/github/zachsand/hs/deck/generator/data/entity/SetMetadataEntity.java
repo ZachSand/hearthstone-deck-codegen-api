@@ -25,20 +25,14 @@ public class SetMetadataEntity {
 	Set<SetGroupMetadataEntity> setGroupMetadataEntity;
 	@Id
 	private Integer id;
+
 	private String slug;
-
 	private String releaseDate;
-
 	private String name;
-
 	private String type;
-
 	private int collectibleCount;
-
 	private int collectibleRevealedCount;
-
 	private int nonCollectibleCount;
-
 	private int nonCollectibleRevealedCount;
 
 	/**

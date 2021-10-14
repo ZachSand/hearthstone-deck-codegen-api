@@ -14,6 +14,12 @@ import com.github.zachsand.hs.deck.generator.data.entity.SetMetadataEntity;
  */
 public interface CardRepository extends JpaRepository<CardEntity, Integer> {
 
+	/*
+	 * The cross joins are for being able to select duplicates of a card.
+	 * The multi class conditions are due to the dual-class cards having the neutral class ID but a separate list
+	 * of class IDs it is multi class for.
+	 */
+
 	/**
 	 * Finds a limited amount of random cards with the condition that it is in the set and class requested.
 	 * Up to two of the same cards can be returned with the random card list.

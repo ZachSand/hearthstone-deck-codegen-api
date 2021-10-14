@@ -14,13 +14,9 @@ import org.springframework.boot.context.properties.ConstructorBinding;
 public class BattlenetApiConfig {
 
 	private final String encoding;
-
 	private final String tokenUrl;
-
 	private final String hearthstoneBaseUrl;
-
 	private final String locale;
-
 	private final int pageSize;
 
 	/**

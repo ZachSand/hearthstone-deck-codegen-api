@@ -35,7 +35,6 @@ public class DeckGeneratorController {
 	private static final Logger LOGGER = LogManager.getLogger(DeckGeneratorController.class);
 
 	private final DeckGeneratorService deckGeneratorService;
-
 	private final DeckRequestValidator deckRequestValidator;
 
 	/**
